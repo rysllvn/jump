@@ -86,6 +86,156 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./config.js":
+/*!*******************!*\
+  !*** ./config.js ***!
+  \*******************/
+/*! exports provided: game, physics, graphics */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "game", function() { return game; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "physics", function() { return physics; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "graphics", function() { return graphics; });
+const game = {
+    floor: 800,
+    playerHeight: 50,
+    platformDistance: 60
+}
+
+const physics = {
+    gravity: 2000,
+    jumpVel: 1000,
+    playerSpeed: 800,
+    playerAccel: 100000,
+    friction: 50000,
+    flareSpeed: 500,
+    platformSpeeds: 15,
+};
+
+const graphics = {
+    screenWidth: 1200,
+    screenHeight: 800,
+};
+
+/***/ }),
+
+/***/ "./src/display.js":
+/*!************************!*\
+  !*** ./src/display.js ***!
+  \************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Display {
+    constructor(ctx) {
+        this.ctx = ctx;
+        this.lastEyeShift = Date.now();
+        this.eyePos = 1;
+    }
+
+    draw(dx, dy, entities) {
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(0,0, 1200, 800);
+        this.drawPlayer(dx, dy, entities.player);
+        entities.platforms.forEach(platform => this.drawPlatform(dx, dy, platform));
+    }
+
+    drawPlatform(dx, dy, platform) {
+        const cx = platform.x - dx;
+        const cy = platform.y - dy;
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(cx, cy, platform.width, platform.height);
+        this.ctx.strokeStyle = 'white';
+        this.ctx.strokeRect(cx, cy, platform.width, platform.height);
+    }
+
+    drawPlayer(dx, dy, player) {
+        const cx = player.x - dx;
+        const cy = player.y - dy;
+        const vx = player.vx;
+        const vy = player.vy;
+
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(cx, cy, 50, 50);
+
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillRect(8 + cx, cy, 12, 12);
+        this.ctx.fillRect(28 + cx, cy, 12, 12);
+        this.strokeStyle = 'green';
+        this.ctx.strokeRect(cx, cy, 50, 50);
+
+        // Draw pupils
+        const now = Date.now();
+        this.ctx.fillStyle = 'black';   
+        if (vx === 0 && vy === 0) {
+            if (now - this.lastEyeShift > 600) {
+                this.eyePos = Math.floor(Math.random()*3);
+                this.lastEyeShift = now;
+            }
+            switch (this.eyePos) {
+                case 0:
+                    this.ctx.fillRect(8 + cx+7, cy+3, 6, 6);
+                    this.ctx.fillRect(8 + cx+27, cy+3, 6, 6);
+                    break;
+                case 1: 
+                    this.ctx.fillRect(8 + cx, cy+3, 6, 6);
+                    this.ctx.fillRect(8 + cx+20, cy+3, 6, 6);
+                    break;
+                case 2:
+                    this.ctx.fillRect(8 + cx+3, cy, 6, 6);
+                    this.ctx.fillRect(8 + cx+23, cy, 6, 6);
+                    break;
+                default:
+                    this.ctx.fillRect(8 + cx+3, cy+3, 6, 6);
+                    this.ctx.fillRect(8 + cx+23, cy+3, 6, 6);
+                    break;
+            }
+        } else {
+            this.lastEyeShift = now;
+        }
+        if (vx > 0 && vy < 53) {
+            this.ctx.fillRect(8 + cx+7, cy+3, 6, 6);
+            this.ctx.fillRect(8 + cx+27, cy+3, 6, 6);
+        }
+        if (vx > 0 && vy < 0) { 
+            this.ctx.fillRect(8 + cx+6, cy, 6, 6);
+            this.ctx.fillRect(8 + cx+26, cy, 6, 6);
+        }
+        if (vx > 0 && vy > 53) {
+            this.ctx.fillRect(8 + cx+6, cy+6, 6, 6);
+            this.ctx.fillRect(8 + cx+26, cy+6, 6, 6);
+        }
+        if (vx === 0 && vy > 52) {
+            this.ctx.fillRect(8 + cx+3, cy+6, 6, 6);
+            this.ctx.fillRect(8 + cx+23, cy+6, 6, 6);
+        }
+        if (vx === 0 && vy < 0) {
+            this.ctx.fillRect(8 + cx+3, cy, 6, 6);
+            this.ctx.fillRect(8 + cx+23, cy, 6, 6);
+        }
+        if (vx < 0 && vy < 52) {
+            this.ctx.fillRect(8 + cx, cy+3, 6, 6);
+            this.ctx.fillRect(8 + cx+20, cy+3, 6, 6);
+        }
+        if (vx < 0 && vy < 0) {
+            this.ctx.fillRect(8 + cx, cy, 6, 6);
+            this.ctx.fillRect(8 + cx+20, cy, 6, 6);
+        }
+        if (vx < 0 && vy > 53) {
+            this.ctx.fillRect(8 + cx, cy+6, 6, 6);
+            this.ctx.fillRect(8 + cx+20, cy+6, 6, 6);
+        }
+    }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Display);
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
@@ -205,34 +355,61 @@ class InputManager {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ "./src/player.js");
+/* harmony import */ var _display__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./display */ "./src/display.js");
+/* harmony import */ var _platform__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./platform */ "./src/platform.js");
+/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./player */ "./src/player.js");
+
+
 
 
 class Model {
     constructor() {
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        this.player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"](400, 750, ctx);
-        this.platforms = [];
-        this.flares = [];
-        this.ctx = ctx;
-    }
-
-    clearScreen() {
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0,0, 1200, 800);
+        this.entities = {
+            player: new _player__WEBPACK_IMPORTED_MODULE_2__["default"](400, 4800),
+            platforms: [
+                new _platform__WEBPACK_IMPORTED_MODULE_1__["default"](0, 4900, 1200, 50)
+            ],
+            flares: [],
+        }
+        this.display = new _display__WEBPACK_IMPORTED_MODULE_0__["default"](ctx);
     }
 
     update(inputs, dt) {
-        this.clearScreen();
-        this.player.update(inputs, dt);
-        // this.platforms.forEach(platform => platform.move(dt));
-        // this.flares.forEach(flare => flare.move(dt));
-        this.player.draw();
+        this.entities.player.update(inputs, dt);
+        this.entities.player.handleCollisions(this.entities.platforms);
+        this.display.draw(0, 4500, this.entities)       
     }
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Model);
+
+/***/ }),
+
+/***/ "./src/platform.js":
+/*!*************************!*\
+  !*** ./src/platform.js ***!
+  \*************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Platform {
+    constructor(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    update() {
+
+    }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Platform);
 
 /***/ }),
 
@@ -245,94 +422,58 @@ class Model {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./config.js");
+
+
 class Player {
     constructor(x, y, ctx) {
         this.x = x;
         this.y = y;
         this.vx = 0;
         this.vy = 0;
-
         this.ctx = ctx;
-
+        this.onPlat = true;
         this.lastEyeShift = Date.now();
     }
 
-    update() {
-        
+    handleCollisions(platforms) {
+        platforms.forEach(platform => {
+            const sx = platform.x; //start x
+            const ex = sx + platform.width;
+            const sy = platform.y;
+            const ey = sy + platform.height;
+            if (this.y + 50 > sy && this.y + 50 < ey ) {
+                this.vy = 0;
+                this.y = sy - 50;
+                this.onPlat = true;
+            }
+        });
     }
 
-    draw() {
-        const now = Date.now();
+    update(inputs, dt) {
+        if (this.onPlat) {
+            if (inputs.right || inputs.left) {
+                if (inputs.right) this.vx += _config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerAccel * dt;
+                if (inputs.left) this.vx -= _config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerAccel * dt;
+            } else {
+                if (this.vx > 0) {
+                    this.vx -= _config__WEBPACK_IMPORTED_MODULE_0__["physics"].friction * dt;
+                    if (this.vx < 0) this.vx = 0;
+                }
+                if (this.vx < 0) {
+                    this.vx += _config__WEBPACK_IMPORTED_MODULE_0__["physics"].friction * dt;
+                    if (this.vx > 0) this.vx = 0
+                }
+            }
+            if (inputs.jump) this.vy = -_config__WEBPACK_IMPORTED_MODULE_0__["physics"].jumpVel;
+        }
+        if (this.vx > _config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerSpeed) this.vx = _config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerSpeed;
+        if (this.vx < -_config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerSpeed) this.vx = -_config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerSpeed;
 
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(this.x, this.y, 50, 50);
-        
-        // Draw eyes
-        this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(8 + this.x, this.y, 12, 12);
-        this.ctx.fillRect(8 + this.x+20, this.y, 12, 12);
-        
-        // Draw pupils
-        this.ctx.fillStyle = 'black';   
-        if (this.vx === 0 && this.vy < 51) {
-            if (now - this.lastEyeShift > 600) {
-                this.eyePos = Math.floor(Math.random()*3);
-                this.lastEyeShift = now;
-            }
-            switch (this.eyePos) {
-                case 0:
-                    this.ctx.fillRect(8 + this.x+7, this.y+3, 6, 6);
-                    this.ctx.fillRect(8 + this.x+27, this.y+3, 6, 6);
-                    break;
-                case 1: 
-                    this.ctx.fillRect(8 + this.x, this.y+3, 6, 6);
-                    this.ctx.fillRect(8 + this.x+20, this.y+3, 6, 6);
-                    break;
-                case 2:
-                    this.ctx.fillRect(8 + this.x+3, this.y, 6, 6);
-                    this.ctx.fillRect(8 + this.x+23, this.y, 6, 6);
-                    break;
-                default:
-                    this.ctx.fillRect(8 + this.x+3, this.y+3, 6, 6);
-                    this.ctx.fillRect(8 + this.x+23, this.y+3, 6, 6);
-                    break;
-            }
-        } else {
-            this.lastEyeShift = now;
-        }
-    
-        if (this.vx > 0 && this.vy < 53) {
-            this.ctx.fillRect(8 + this.x+7, this.y+3, 6, 6);
-            this.ctx.fillRect(8 + this.x+27, this.y+3, 6, 6);
-        }
-        if (this.vx > 0 && this.vy < 0) { 
-            this.ctx.fillRect(8 + this.x+6, this.y, 6, 6);
-            this.ctx.fillRect(8 + this.x+26, this.y, 6, 6);
-        }
-        if (this.vx > 0 && this.vy > 53) {
-            this.ctx.fillRect(8 + this.x+6, this.y+6, 6, 6);
-            this.ctx.fillRect(8 + this.x+26, this.y+6, 6, 6);
-        }
-        if (this.vx === 0 && this.vy > 52) {
-            this.ctx.fillRect(8 + this.x+3, this.y+6, 6, 6);
-            this.ctx.fillRect(8 + this.x+23, this.y+6, 6, 6);
-        }
-        if (this.vx === 0 && this.vy < 0) {
-            this.ctx.fillRect(8 + this.x+3, this.y, 6, 6);
-            this.ctx.fillRect(8 + this.x+23, this.y, 6, 6);
-        }
-        if (this.vx < 0 && this.vy < 52) {
-            this.ctx.fillRect(8 + this.x, this.y+3, 6, 6);
-            this.ctx.fillRect(8 + this.x+20, this.y+3, 6, 6);
-        }
-        if (this.vx < 0 && this.vy < 0) {
-            this.ctx.fillRect(8 + this.x, this.y, 6, 6);
-            this.ctx.fillRect(8 + this.x+20, this.y, 6, 6);
-        }
-        if (this.vx < 0 && this.vy > 53) {
-            this.ctx.fillRect(8 + this.x, y+6, 6, 6);
-            this.ctx.fillRect(8 + this.x+20, y+6, 6, 6);
-        }
+        this.vy += _config__WEBPACK_IMPORTED_MODULE_0__["physics"].gravity * dt;
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+        this.onPlat = false;
     }
 }
 

@@ -1,91 +1,54 @@
+import { physics } from "../config";
+
 class Player {
     constructor(x, y, ctx) {
         this.x = x;
         this.y = y;
         this.vx = 0;
         this.vy = 0;
-
         this.ctx = ctx;
-
+        this.onPlat = true;
         this.lastEyeShift = Date.now();
     }
 
-    update() {
-        
+    handleCollisions(platforms) {
+        platforms.forEach(platform => {
+            const sx = platform.x; //start x
+            const ex = sx + platform.width;
+            const sy = platform.y;
+            const ey = sy + platform.height;
+            if (this.y + 50 > sy && this.y + 50 < ey ) {
+                this.vy = 0;
+                this.y = sy - 50;
+                this.onPlat = true;
+            }
+        });
     }
 
-    draw() {
-        const now = Date.now();
+    update(inputs, dt) {
+        if (this.onPlat) {
+            if (inputs.right || inputs.left) {
+                if (inputs.right) this.vx += physics.playerAccel * dt;
+                if (inputs.left) this.vx -= physics.playerAccel * dt;
+            } else {
+                if (this.vx > 0) {
+                    this.vx -= physics.friction * dt;
+                    if (this.vx < 0) this.vx = 0;
+                }
+                if (this.vx < 0) {
+                    this.vx += physics.friction * dt;
+                    if (this.vx > 0) this.vx = 0
+                }
+            }
+            if (inputs.jump) this.vy = -physics.jumpVel;
+        }
+        if (this.vx > physics.playerSpeed) this.vx = physics.playerSpeed;
+        if (this.vx < -physics.playerSpeed) this.vx = -physics.playerSpeed;
 
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(this.x, this.y, 50, 50);
-        
-        // Draw eyes
-        this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(8 + this.x, this.y, 12, 12);
-        this.ctx.fillRect(8 + this.x+20, this.y, 12, 12);
-        
-        // Draw pupils
-        this.ctx.fillStyle = 'black';   
-        if (this.vx === 0 && this.vy < 51) {
-            if (now - this.lastEyeShift > 600) {
-                this.eyePos = Math.floor(Math.random()*3);
-                this.lastEyeShift = now;
-            }
-            switch (this.eyePos) {
-                case 0:
-                    this.ctx.fillRect(8 + this.x+7, this.y+3, 6, 6);
-                    this.ctx.fillRect(8 + this.x+27, this.y+3, 6, 6);
-                    break;
-                case 1: 
-                    this.ctx.fillRect(8 + this.x, this.y+3, 6, 6);
-                    this.ctx.fillRect(8 + this.x+20, this.y+3, 6, 6);
-                    break;
-                case 2:
-                    this.ctx.fillRect(8 + this.x+3, this.y, 6, 6);
-                    this.ctx.fillRect(8 + this.x+23, this.y, 6, 6);
-                    break;
-                default:
-                    this.ctx.fillRect(8 + this.x+3, this.y+3, 6, 6);
-                    this.ctx.fillRect(8 + this.x+23, this.y+3, 6, 6);
-                    break;
-            }
-        } else {
-            this.lastEyeShift = now;
-        }
-    
-        if (this.vx > 0 && this.vy < 53) {
-            this.ctx.fillRect(8 + this.x+7, this.y+3, 6, 6);
-            this.ctx.fillRect(8 + this.x+27, this.y+3, 6, 6);
-        }
-        if (this.vx > 0 && this.vy < 0) { 
-            this.ctx.fillRect(8 + this.x+6, this.y, 6, 6);
-            this.ctx.fillRect(8 + this.x+26, this.y, 6, 6);
-        }
-        if (this.vx > 0 && this.vy > 53) {
-            this.ctx.fillRect(8 + this.x+6, this.y+6, 6, 6);
-            this.ctx.fillRect(8 + this.x+26, this.y+6, 6, 6);
-        }
-        if (this.vx === 0 && this.vy > 52) {
-            this.ctx.fillRect(8 + this.x+3, this.y+6, 6, 6);
-            this.ctx.fillRect(8 + this.x+23, this.y+6, 6, 6);
-        }
-        if (this.vx === 0 && this.vy < 0) {
-            this.ctx.fillRect(8 + this.x+3, this.y, 6, 6);
-            this.ctx.fillRect(8 + this.x+23, this.y, 6, 6);
-        }
-        if (this.vx < 0 && this.vy < 52) {
-            this.ctx.fillRect(8 + this.x, this.y+3, 6, 6);
-            this.ctx.fillRect(8 + this.x+20, this.y+3, 6, 6);
-        }
-        if (this.vx < 0 && this.vy < 0) {
-            this.ctx.fillRect(8 + this.x, this.y, 6, 6);
-            this.ctx.fillRect(8 + this.x+20, this.y, 6, 6);
-        }
-        if (this.vx < 0 && this.vy > 53) {
-            this.ctx.fillRect(8 + this.x, y+6, 6, 6);
-            this.ctx.fillRect(8 + this.x+20, y+6, 6, 6);
-        }
+        this.vy += physics.gravity * dt;
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+        this.onPlat = false;
     }
 }
 
