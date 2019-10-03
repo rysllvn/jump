@@ -1,0 +1,13 @@
+html {
+    background-color: black;
+    color: white;
+}
+
+body {
+    max-width: 800;
+    margin: 0 auto;
+}
+
+canvas {
+    border: 1px solid purple;
+}

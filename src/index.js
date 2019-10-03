@@ -15,7 +15,7 @@ const mainLoop = () => {
     let dt = (now - lastTime) / 1000;
     lastTime = now;
 
-    model.run(input.pressedKeys, dt);
+    model.update(input.pressedKeys, dt);
     requestAnimationFrame(() => mainLoop());
 }
 mainLoop();

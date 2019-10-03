@@ -96,7 +96,7 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _input_manager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./input_manager */ "./src/input_manager.js");
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./model */ "./src/model.js");
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./model */ "./src/model.js");
 
 
 
@@ -104,7 +104,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 const input = new _input_manager__WEBPACK_IMPORTED_MODULE_0__["default"]();
-const model = new _model__WEBPACK_IMPORTED_MODULE_2__["default"](ctx);
+const model = new _model__WEBPACK_IMPORTED_MODULE_1__["default"](ctx);
 
 input.bindKeys();
 let lastTime = Date.now();
@@ -114,7 +114,7 @@ const mainLoop = () => {
     let dt = (now - lastTime) / 1000;
     lastTime = now;
 
-    model.run(input.pressedKeys, dt);
+    model.update(input.pressedKeys, dt);
     requestAnimationFrame(() => mainLoop());
 }
 mainLoop();
@@ -205,11 +205,138 @@ class InputManager {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-class Model {
+/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ "./src/player.js");
 
+
+class Model {
+    constructor() {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        this.player = new _player__WEBPACK_IMPORTED_MODULE_0__["default"](400, 750, ctx);
+        this.platforms = [];
+        this.flares = [];
+        this.ctx = ctx;
+    }
+
+    clearScreen() {
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(0,0, 1200, 800);
+    }
+
+    update(inputs, dt) {
+        this.clearScreen();
+        this.player.update(inputs, dt);
+        // this.platforms.forEach(platform => platform.move(dt));
+        // this.flares.forEach(flare => flare.move(dt));
+        this.player.draw();
+    }
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Model);
+
+/***/ }),
+
+/***/ "./src/player.js":
+/*!***********************!*\
+  !*** ./src/player.js ***!
+  \***********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Player {
+    constructor(x, y, ctx) {
+        this.x = x;
+        this.y = y;
+        this.vx = 0;
+        this.vy = 0;
+
+        this.ctx = ctx;
+
+        this.lastEyeShift = Date.now();
+    }
+
+    update() {
+        
+    }
+
+    draw() {
+        const now = Date.now();
+
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(this.x, this.y, 50, 50);
+        
+        // Draw eyes
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillRect(8 + this.x, this.y, 12, 12);
+        this.ctx.fillRect(8 + this.x+20, this.y, 12, 12);
+        
+        // Draw pupils
+        this.ctx.fillStyle = 'black';   
+        if (this.vx === 0 && this.vy < 51) {
+            if (now - this.lastEyeShift > 600) {
+                this.eyePos = Math.floor(Math.random()*3);
+                this.lastEyeShift = now;
+            }
+            switch (this.eyePos) {
+                case 0:
+                    this.ctx.fillRect(8 + this.x+7, this.y+3, 6, 6);
+                    this.ctx.fillRect(8 + this.x+27, this.y+3, 6, 6);
+                    break;
+                case 1: 
+                    this.ctx.fillRect(8 + this.x, this.y+3, 6, 6);
+                    this.ctx.fillRect(8 + this.x+20, this.y+3, 6, 6);
+                    break;
+                case 2:
+                    this.ctx.fillRect(8 + this.x+3, this.y, 6, 6);
+                    this.ctx.fillRect(8 + this.x+23, this.y, 6, 6);
+                    break;
+                default:
+                    this.ctx.fillRect(8 + this.x+3, this.y+3, 6, 6);
+                    this.ctx.fillRect(8 + this.x+23, this.y+3, 6, 6);
+                    break;
+            }
+        } else {
+            this.lastEyeShift = now;
+        }
+    
+        if (this.vx > 0 && this.vy < 53) {
+            this.ctx.fillRect(8 + this.x+7, this.y+3, 6, 6);
+            this.ctx.fillRect(8 + this.x+27, this.y+3, 6, 6);
+        }
+        if (this.vx > 0 && this.vy < 0) { 
+            this.ctx.fillRect(8 + this.x+6, this.y, 6, 6);
+            this.ctx.fillRect(8 + this.x+26, this.y, 6, 6);
+        }
+        if (this.vx > 0 && this.vy > 53) {
+            this.ctx.fillRect(8 + this.x+6, this.y+6, 6, 6);
+            this.ctx.fillRect(8 + this.x+26, this.y+6, 6, 6);
+        }
+        if (this.vx === 0 && this.vy > 52) {
+            this.ctx.fillRect(8 + this.x+3, this.y+6, 6, 6);
+            this.ctx.fillRect(8 + this.x+23, this.y+6, 6, 6);
+        }
+        if (this.vx === 0 && this.vy < 0) {
+            this.ctx.fillRect(8 + this.x+3, this.y, 6, 6);
+            this.ctx.fillRect(8 + this.x+23, this.y, 6, 6);
+        }
+        if (this.vx < 0 && this.vy < 52) {
+            this.ctx.fillRect(8 + this.x, this.y+3, 6, 6);
+            this.ctx.fillRect(8 + this.x+20, this.y+3, 6, 6);
+        }
+        if (this.vx < 0 && this.vy < 0) {
+            this.ctx.fillRect(8 + this.x, this.y, 6, 6);
+            this.ctx.fillRect(8 + this.x+20, this.y, 6, 6);
+        }
+        if (this.vx < 0 && this.vy > 53) {
+            this.ctx.fillRect(8 + this.x, y+6, 6, 6);
+            this.ctx.fillRect(8 + this.x+20, y+6, 6, 6);
+        }
+    }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Player);
 
 /***/ })
 
