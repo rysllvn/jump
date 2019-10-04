@@ -4,16 +4,16 @@ export const game = {
 }
 
 export const physics = {
-    gravity: 2000,
-    jumpVel: 1000,
+    gravity: 2400,
+    jumpVel: 1200,
     playerSpeed: 400,
-    playerAccel: 100000,
+    playerAccel: 10000,
     friction: 8000,
     flareSpeed: 500,
     platformSpeeds: 15,
 };
 
 export const graphics = {
-    screenWidth: 1200,
-    screenHeight: 800,
+    width: 1200,
+    height: 800,
 };

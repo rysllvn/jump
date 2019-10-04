@@ -1,4 +1,4 @@
-import { physics } from "./config";
+import { physics, graphics } from "./config";
 
 class Player {
     constructor(x, y, ctx) {
@@ -12,8 +12,8 @@ class Player {
     }
 
     handleCollisions(platforms) {
-        if (this.x + 50 > 1200) {
-            this.x = 1200 - 50;
+        if (this.x + 50 > graphics.width) {
+            this.x = graphics.width - 50;
             this.vx = 0;
         } else if (this.x < 0) {
             this.x = 0;

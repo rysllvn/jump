@@ -12,6 +12,7 @@ class Flare {
         this.growing = true;
         this.vx = 0;
         this.vy = 0;
+        this.speed = Math.random()*200+50;
     }
 
     update(dt) {
@@ -26,7 +27,7 @@ class Flare {
             this.growing = true;
         }
         // this.vy += physics.gravity/10 * dt;
-        this.y += 100 * dt;
+        this.y += this.speed * dt;
     }
 }
 

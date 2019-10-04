@@ -1,3 +1,5 @@
+import { timingSafeEqual } from "crypto";
+
 class Display {
     constructor(ctx) {
         this.ctx = ctx;
@@ -19,7 +21,7 @@ class Display {
         const gradient = this.ctx.createRadialGradient(cx, cy, 5, cx, cy, flare.radius);
         gradient.addColorStop(0, flare.color1);
         gradient.addColorStop(0.4, flare.color2);
-        gradient.addColorStop(1, 'black');
+        gradient.addColorStop(1, 'rgba(0,0,0,0)');
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(cx-flare.radius, cy-flare.radius, flare.radius*2, flare.radius*2);
     }
@@ -40,7 +42,11 @@ class Display {
         const vy = player.vy;
 
         this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(cx, cy, 50, 50);
+        this.ctx.fillRect(cx, cy+14, 50, 36);
+        this.ctx.beginPath();
+        this.ctx.arc(cx+25, cy+18, 25, 0, Math.PI, true);
+        this.ctx.fill();
+        
 
         this.ctx.fillStyle = 'white';
         this.ctx.fillRect(8 + cx, cy, 12, 12);
