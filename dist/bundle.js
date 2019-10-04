@@ -86,10 +86,10 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./config.js":
-/*!*******************!*\
-  !*** ./config.js ***!
-  \*******************/
+/***/ "./src/config.js":
+/*!***********************!*\
+  !*** ./src/config.js ***!
+  \***********************/
 /*! exports provided: game, physics, graphics */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -99,17 +99,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "physics", function() { return physics; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "graphics", function() { return graphics; });
 const game = {
-    floor: 800,
-    playerHeight: 50,
-    platformDistance: 60
+    flareStartRadius: 100,
+    flareGrowSpeed: 20,
 }
 
 const physics = {
     gravity: 2000,
     jumpVel: 1000,
-    playerSpeed: 800,
+    playerSpeed: 400,
     playerAccel: 100000,
-    friction: 50000,
+    friction: 8000,
     flareSpeed: 500,
     platformSpeeds: 15,
 };
@@ -140,8 +139,20 @@ class Display {
     draw(dx, dy, entities) {
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0,0, 1200, 800);
+        entities.flares.forEach(flare => this.drawFlare(dx, dy, flare));
         this.drawPlayer(dx, dy, entities.player);
         entities.platforms.forEach(platform => this.drawPlatform(dx, dy, platform));
+    }
+
+    drawFlare(dx, dy, flare) {
+        const cx = flare.x - dx;
+        const cy = flare.y - dy;
+        const gradient = this.ctx.createRadialGradient(cx, cy, 5, cx, cy, flare.radius);
+        gradient.addColorStop(0, flare.color1);
+        gradient.addColorStop(0.4, flare.color2);
+        gradient.addColorStop(1, 'black');
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(cx-flare.radius, cy-flare.radius, flare.radius*2, flare.radius*2);
     }
 
     drawPlatform(dx, dy, platform) {
@@ -150,7 +161,7 @@ class Display {
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(cx, cy, platform.width, platform.height);
         this.ctx.strokeStyle = 'white';
-        this.ctx.strokeRect(cx, cy, platform.width, platform.height);
+        // this.ctx.strokeRect(cx, cy, platform.width, platform.height);
     }
 
     drawPlayer(dx, dy, player) {
@@ -166,7 +177,7 @@ class Display {
         this.ctx.fillRect(8 + cx, cy, 12, 12);
         this.ctx.fillRect(28 + cx, cy, 12, 12);
         this.strokeStyle = 'green';
-        this.ctx.strokeRect(cx, cy, 50, 50);
+        // this.ctx.strokeRect(cx, cy, 50, 50);
 
         // Draw pupils
         const now = Date.now();
@@ -233,6 +244,52 @@ class Display {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Display);
+
+/***/ }),
+
+/***/ "./src/flare.js":
+/*!**********************!*\
+  !*** ./src/flare.js ***!
+  \**********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/config.js");
+
+
+class Flare {
+    constructor(x, y, radius, maxRadius, color1, color2) {
+        this.x = x;
+        this.y = y;
+        this.color1 = color1;
+        this.color2 = color2;
+        this.radius = radius;
+        this.minRadius = radius;
+        this.maxRadius = maxRadius;
+        this.growing = true;
+        this.vx = 0;
+        this.vy = 0;
+    }
+
+    update(dt) {
+        if (this.growing) {
+            this.radius += _config__WEBPACK_IMPORTED_MODULE_0__["game"].flareGrowSpeed * dt;
+        } else {
+            this.radius -= _config__WEBPACK_IMPORTED_MODULE_0__["game"].flareGrowSpeed * dt;
+        }
+        if (this.radius > this.maxRadius) {
+            this.growing = false;
+        } else if (this.radius < this.minRadius) {
+            this.growing = true;
+        }
+        // this.vy += physics.gravity/10 * dt;
+        this.y += 100 * dt;
+    }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Flare);
 
 /***/ }),
 
@@ -346,6 +403,29 @@ class InputManager {
 
 /***/ }),
 
+/***/ "./src/levels.js":
+/*!***********************!*\
+  !*** ./src/levels.js ***!
+  \***********************/
+/*! exports provided: level1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "level1", function() { return level1; });
+/* harmony import */ var _platform__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./platform */ "./src/platform.js");
+
+
+const level1 = [
+    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](0, 4900, 1200, 50),
+    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](400, 4700, 300, 20),
+    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](800, 4580, 200, 20),
+    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](520, 4400, 310, 20),
+    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](100, 4200, 400, 20)
+];
+
+/***/ }),
+
 /***/ "./src/model.js":
 /*!**********************!*\
   !*** ./src/model.js ***!
@@ -356,30 +436,59 @@ class InputManager {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _display__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./display */ "./src/display.js");
-/* harmony import */ var _platform__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./platform */ "./src/platform.js");
-/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./player */ "./src/player.js");
+/* harmony import */ var _flare__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./flare */ "./src/flare.js");
+/* harmony import */ var _platform__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./platform */ "./src/platform.js");
+/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./player */ "./src/player.js");
+/* harmony import */ var _levels__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./levels */ "./src/levels.js");
 
 
 
+
+
+
+const colors = [
+    '#a450fd',
+    '#fd5053',
+    '#a9fd50',
+    '#50fdfa'
+]
 
 class Model {
     constructor() {
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         this.entities = {
-            player: new _player__WEBPACK_IMPORTED_MODULE_2__["default"](400, 4800),
-            platforms: [
-                new _platform__WEBPACK_IMPORTED_MODULE_1__["default"](0, 4900, 1200, 50)
+            player: new _player__WEBPACK_IMPORTED_MODULE_3__["default"](400, 4800),
+            platforms: _levels__WEBPACK_IMPORTED_MODULE_4__["level1"],
+            flares: [
+                new _flare__WEBPACK_IMPORTED_MODULE_1__["default"](600, 4250,300, 400, '#3bf5d3', '#3bf5d3')
             ],
-            flares: [],
         }
+        this.viewSpeeds = [2, 15, 30, 50, 100];
+        this.dy = 4500;
         this.display = new _display__WEBPACK_IMPORTED_MODULE_0__["default"](ctx);
+        this.lastFlare = Date.now();
+        this.level = 0;
+    }
+
+    generateFlares() {
+        const now = Date.now();
+        if (now - this.lastFlare > 3000) {
+            const color1 = Math.floor(Math.random()*3);
+            const color2 = Math.floor(Math.random()*3);
+            const flare = new _flare__WEBPACK_IMPORTED_MODULE_1__["default"](Math.random()*1150+50, this.dy - 500, 100, 120, colors[color1], colors[color2]);
+            this.entities.flares.push(flare);
+            this.lastFlare = now;
+        }
     }
 
     update(inputs, dt) {
+        this.dy -= this.viewSpeeds[1] * dt;
+        this.generateFlares();
+        this.entities.flares.forEach(flare => flare.update(dt));
         this.entities.player.update(inputs, dt);
         this.entities.player.handleCollisions(this.entities.platforms);
-        this.display.draw(0, 4500, this.entities)       
+        this.display.draw(0, this.dy, this.entities)       
     }
 }
 
@@ -422,7 +531,7 @@ class Platform {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./config.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/config.js");
 
 
 class Player {
@@ -437,25 +546,40 @@ class Player {
     }
 
     handleCollisions(platforms) {
+        if (this.x + 50 > 1200) {
+            this.x = 1200 - 50;
+            this.vx = 0;
+        } else if (this.x < 0) {
+            this.x = 0;
+            this.vx = 0;
+        }
         platforms.forEach(platform => {
             const sx = platform.x; //start x
             const ex = sx + platform.width;
             const sy = platform.y;
             const ey = sy + platform.height;
-            if (this.y + 50 > sy && this.y + 50 < ey ) {
-                this.vy = 0;
-                this.y = sy - 50;
-                this.onPlat = true;
+
+            if (this.x + 50 > sx && this.x < ex) {
+                // Handle floors
+                if (this.y + 50 > sy && this.y + 50 < ey ) {
+                    this.vy = 0;
+                    this.y = sy - 50;
+                    this.onPlat = true;
+                }
+                // Handle ceilings
+                if (this.y < ey && this.y > sy) {
+                    this.vy = 0;
+                    this.y = ey;
+                }
             }
         });
     }
 
     update(inputs, dt) {
         if (this.onPlat) {
-            if (inputs.right || inputs.left) {
-                if (inputs.right) this.vx += _config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerAccel * dt;
-                if (inputs.left) this.vx -= _config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerAccel * dt;
-            } else {
+            if (inputs.jump) this.vy = -_config__WEBPACK_IMPORTED_MODULE_0__["physics"].jumpVel;
+
+            if (!inputs.right && !inputs.left) {
                 if (this.vx > 0) {
                     this.vx -= _config__WEBPACK_IMPORTED_MODULE_0__["physics"].friction * dt;
                     if (this.vx < 0) this.vx = 0;
@@ -465,8 +589,9 @@ class Player {
                     if (this.vx > 0) this.vx = 0
                 }
             }
-            if (inputs.jump) this.vy = -_config__WEBPACK_IMPORTED_MODULE_0__["physics"].jumpVel;
         }
+        if (inputs.right) this.vx += _config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerAccel * dt;
+        if (inputs.left) this.vx -= _config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerAccel * dt;
         if (this.vx > _config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerSpeed) this.vx = _config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerSpeed;
         if (this.vx < -_config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerSpeed) this.vx = -_config__WEBPACK_IMPORTED_MODULE_0__["physics"].playerSpeed;
 

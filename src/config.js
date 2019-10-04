@@ -1,15 +1,14 @@
 export const game = {
-    floor: 800,
-    playerHeight: 50,
-    platformDistance: 60
+    flareStartRadius: 100,
+    flareGrowSpeed: 20,
 }
 
 export const physics = {
     gravity: 2000,
     jumpVel: 1000,
-    playerSpeed: 800,
+    playerSpeed: 400,
     playerAccel: 100000,
-    friction: 50000,
+    friction: 8000,
     flareSpeed: 500,
     platformSpeeds: 15,
 };

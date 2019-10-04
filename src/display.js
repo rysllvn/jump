@@ -8,8 +8,20 @@ class Display {
     draw(dx, dy, entities) {
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0,0, 1200, 800);
+        entities.flares.forEach(flare => this.drawFlare(dx, dy, flare));
         this.drawPlayer(dx, dy, entities.player);
         entities.platforms.forEach(platform => this.drawPlatform(dx, dy, platform));
+    }
+
+    drawFlare(dx, dy, flare) {
+        const cx = flare.x - dx;
+        const cy = flare.y - dy;
+        const gradient = this.ctx.createRadialGradient(cx, cy, 5, cx, cy, flare.radius);
+        gradient.addColorStop(0, flare.color1);
+        gradient.addColorStop(0.4, flare.color2);
+        gradient.addColorStop(1, 'black');
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(cx-flare.radius, cy-flare.radius, flare.radius*2, flare.radius*2);
     }
 
     drawPlatform(dx, dy, platform) {
@@ -18,7 +30,7 @@ class Display {
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(cx, cy, platform.width, platform.height);
         this.ctx.strokeStyle = 'white';
-        this.ctx.strokeRect(cx, cy, platform.width, platform.height);
+        // this.ctx.strokeRect(cx, cy, platform.width, platform.height);
     }
 
     drawPlayer(dx, dy, player) {
@@ -34,7 +46,7 @@ class Display {
         this.ctx.fillRect(8 + cx, cy, 12, 12);
         this.ctx.fillRect(28 + cx, cy, 12, 12);
         this.strokeStyle = 'green';
-        this.ctx.strokeRect(cx, cy, 50, 50);
+        // this.ctx.strokeRect(cx, cy, 50, 50);
 
         // Draw pupils
         const now = Date.now();
