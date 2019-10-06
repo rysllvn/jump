@@ -4,6 +4,7 @@ class Platform {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.touched = false;
     }
 }
 

@@ -11,14 +11,14 @@ const colors = [
     '#a9fd50',
     '#50fdfa'
 ];
-const introFlare = new Flare(600, 4250, 300, 400, '#3bf5d3', '#3bf5d3');
-const viewSpeeds = [40, 80, 140, 220, 260];
+const introFlare = new Flare(600, 4250, 300, 500, '#a450fd', '#50fdfa');
+const viewSpeeds = [0, 40, 80, 140, 220, 260];
 const display = new Display();
 
 class Model {
     constructor() {
         this.entities = {
-            player: new Player(400, 4800),
+            player: new Player(400, 4855),
             platforms: level1,
             flares: [introFlare]
         }
@@ -38,7 +38,7 @@ class Model {
 
     generateFlares() {
         const now = Date.now();
-        if (now - this.lastFlare > 180) {
+        if (now - this.lastFlare > 200) {
             const color1 = Math.floor(Math.random()*3);
             const color2 = Math.floor(Math.random()*3);
             const flare = new Flare(Math.random()*1100 + 50,
@@ -57,15 +57,21 @@ class Model {
         this.entities.player.x = 400;
         this.entities.player.y = 4800;
         this.entities.platforms = level1;
-        this.level = 0;
+        this.level = 1;
         this.gameOver = false;
+        this.entities.player.score = -1;
+        this.dy = 4500;
+    }
+
+    start() {
+        this.level = 1;
     }
 
     update(inputs, dt) {
         if (this.entities.player.y > this.dy + 1.5*graphics.height) {
             this.gameOver = true;
         }
-        this.dy -= viewSpeeds[1] * dt;
+        this.dy -= viewSpeeds[this.level] * dt;
         // if (this.entities.player.y < this.dy) this.dy = this.entities.player.y;
         this.entities.flares = this.entities.flares.filter(flare => flare.y < this.dy + graphics.height + flare.maxRadius);
         this.entities.platforms = this.entities.platforms.filter(platform => platform.y < this.dy + graphics.height + 200);

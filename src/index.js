@@ -7,32 +7,31 @@ input.bindKeys();
 let lastTime = Date.now();
 let status = 'welcome';
 
-const restartGame = () => {
-    model = new Model();
-};
-
 const mainLoop = () => {
     if (status === 'welcome') {
         if (input.pressedKeys.enter) {
             status = 'playing';
-            const h2s = document.querySelectorAll('h2');
-            h2s.forEach(ele => ele.className = 'hidden');
+            const instructions = document.querySelector('.instructions');
+            instructions.classList.add('hidden');
+            model.start();
         }
     }
 
-    if (status === 'gameOver') {
-
-    }
-
-    if (status === 'playing') {
-        if (model.gameOver) {
-            if (input.pressedKeys.enter) restartGame();
+    if (model.gameOver) {
+        const gameOverMessage = document.querySelector('.game-over');
+        gameOverMessage.classList.remove('hidden');
+        if (input.pressedKeys.enter) {
+            model.resetGame();
+            status === 'welcome';
+            gameOverMessage.classList.add('hidden');
         }
-        let now = Date.now();
-        let dt = (now - lastTime) / 1000;
-        lastTime = now;
-        model.update(input.pressedKeys, dt);
     }
+
+    let now = Date.now();
+    let dt = (now - lastTime) / 1000;
+    lastTime = now;
+    model.update(input.pressedKeys, dt);
+
     requestAnimationFrame(() => mainLoop());
 }
 mainLoop();

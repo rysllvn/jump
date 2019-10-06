@@ -28,9 +28,26 @@ h1 {
     
 }
 
+.score-board {
+    position: absolute;
+    right: 50px;
+    left: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .instructions {
     position: absolute;
     top: 50px;
+    left: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.game-over {
+    position: absolute;
+    top: 50px;
+    left: 50px;
     margin-left: auto;
     margin-right: auto;
 }

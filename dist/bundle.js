@@ -319,32 +319,31 @@ input.bindKeys();
 let lastTime = Date.now();
 let status = 'welcome';
 
-const restartGame = () => {
-    model = new _model__WEBPACK_IMPORTED_MODULE_1__["default"]();
-};
-
 const mainLoop = () => {
     if (status === 'welcome') {
         if (input.pressedKeys.enter) {
             status = 'playing';
-            const h2s = document.querySelectorAll('h2');
-            h2s.forEach(ele => ele.className = 'hidden');
+            const instructions = document.querySelector('.instructions');
+            instructions.classList.add('hidden');
+            model.start();
         }
     }
 
-    if (status === 'gameOver') {
-
-    }
-
-    if (status === 'playing') {
-        if (model.gameOver) {
-            if (input.pressedKeys.enter) restartGame();
+    if (model.gameOver) {
+        const gameOverMessage = document.querySelector('.game-over');
+        gameOverMessage.classList.remove('hidden');
+        if (input.pressedKeys.enter) {
+            model.resetGame();
+            status === 'welcome';
+            gameOverMessage.classList.add('hidden');
         }
-        let now = Date.now();
-        let dt = (now - lastTime) / 1000;
-        lastTime = now;
-        model.update(input.pressedKeys, dt);
     }
+
+    let now = Date.now();
+    let dt = (now - lastTime) / 1000;
+    lastTime = now;
+    model.update(input.pressedKeys, dt);
+
     requestAnimationFrame(() => mainLoop());
 }
 mainLoop();
@@ -433,7 +432,7 @@ const level1 = [
     new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](520, 4400, 310, 28),
     new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](800, 4580, 200, 28),
     new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](400, 4700, 300, 28),
-    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](0, 4900, 1200, 50)
+    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](0, 4900, 1200, 200)
 ];
 
 /***/ }),
@@ -466,14 +465,14 @@ const colors = [
     '#a9fd50',
     '#50fdfa'
 ];
-const introFlare = new _flare__WEBPACK_IMPORTED_MODULE_1__["default"](600, 4250, 300, 400, '#3bf5d3', '#3bf5d3');
-const viewSpeeds = [40, 80, 140, 220, 260];
+const introFlare = new _flare__WEBPACK_IMPORTED_MODULE_1__["default"](600, 4250, 300, 500, '#a450fd', '#50fdfa');
+const viewSpeeds = [0, 40, 80, 140, 220, 260];
 const display = new _display__WEBPACK_IMPORTED_MODULE_0__["default"]();
 
 class Model {
     constructor() {
         this.entities = {
-            player: new _player__WEBPACK_IMPORTED_MODULE_3__["default"](400, 4800),
+            player: new _player__WEBPACK_IMPORTED_MODULE_3__["default"](400, 4855),
             platforms: _levels__WEBPACK_IMPORTED_MODULE_4__["level1"],
             flares: [introFlare]
         }
@@ -493,7 +492,7 @@ class Model {
 
     generateFlares() {
         const now = Date.now();
-        if (now - this.lastFlare > 180) {
+        if (now - this.lastFlare > 200) {
             const color1 = Math.floor(Math.random()*3);
             const color2 = Math.floor(Math.random()*3);
             const flare = new _flare__WEBPACK_IMPORTED_MODULE_1__["default"](Math.random()*1100 + 50,
@@ -512,15 +511,21 @@ class Model {
         this.entities.player.x = 400;
         this.entities.player.y = 4800;
         this.entities.platforms = _levels__WEBPACK_IMPORTED_MODULE_4__["level1"];
-        this.level = 0;
+        this.level = 1;
         this.gameOver = false;
+        this.entities.player.score = -1;
+        this.dy = 4500;
+    }
+
+    start() {
+        this.level = 1;
     }
 
     update(inputs, dt) {
         if (this.entities.player.y > this.dy + 1.5*_config__WEBPACK_IMPORTED_MODULE_5__["graphics"].height) {
             this.gameOver = true;
         }
-        this.dy -= viewSpeeds[1] * dt;
+        this.dy -= viewSpeeds[this.level] * dt;
         // if (this.entities.player.y < this.dy) this.dy = this.entities.player.y;
         this.entities.flares = this.entities.flares.filter(flare => flare.y < this.dy + _config__WEBPACK_IMPORTED_MODULE_5__["graphics"].height + flare.maxRadius);
         this.entities.platforms = this.entities.platforms.filter(platform => platform.y < this.dy + _config__WEBPACK_IMPORTED_MODULE_5__["graphics"].height + 200);
@@ -552,6 +557,7 @@ class Platform {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.touched = false;
     }
 }
 
@@ -580,6 +586,7 @@ class Player {
         this.ctx = ctx;
         this.onPlat = true;
         this.lastEyeShift = Date.now();
+        this.score = -1;
     }
 
     handleCollisions(platforms) {
@@ -602,6 +609,10 @@ class Player {
                     this.vy = 0;
                     this.y = sy - 50;
                     this.onPlat = true;
+                    if (!platform.touched) {
+                        platform.touched = true;
+                        this.score += 1;
+                    }
                 }
                 // Handle ceilings
                 if (this.y < ey && this.y > sy) {
@@ -636,6 +647,8 @@ class Player {
         this.x += this.vx * dt;
         this.y += this.vy * dt;
         this.onPlat = false;
+
+        document.getElementById('score').innerHTML = `Platforms: ${this.score}`;
     }
 }
 

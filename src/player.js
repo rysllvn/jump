@@ -9,6 +9,7 @@ class Player {
         this.ctx = ctx;
         this.onPlat = true;
         this.lastEyeShift = Date.now();
+        this.score = -1;
     }
 
     handleCollisions(platforms) {
@@ -31,6 +32,10 @@ class Player {
                     this.vy = 0;
                     this.y = sy - 50;
                     this.onPlat = true;
+                    if (!platform.touched) {
+                        platform.touched = true;
+                        this.score += 1;
+                    }
                 }
                 // Handle ceilings
                 if (this.y < ey && this.y > sy) {
@@ -65,6 +70,8 @@ class Player {
         this.x += this.vx * dt;
         this.y += this.vy * dt;
         this.onPlat = false;
+
+        document.getElementById('score').innerHTML = `Platforms: ${this.score}`;
     }
 }
 
