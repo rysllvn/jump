@@ -1,13 +1,40 @@
 html {
     background-color: black;
-    color: white;
+    color: #a9fd50;
+    font-family: 'Space Mono', monospace;
 }
 
 body {
-    max-width: 800;
-    margin: 0 auto;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 1200px;
 }
 
 canvas {
-    border: 1px solid purple;
+    border: 1px dashed #50fdfa;
+    
+}
+
+h1 {
+    font-size: 70px;
+    text-align:center;
+}
+
+.game {
+    position: relative;
+    
+}
+
+.instructions {
+    position: absolute;
+    top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hidden {
+    display: none;
 }

@@ -6,9 +6,9 @@ export const game = {
 export const physics = {
     gravity: 2400,
     jumpVel: 1200,
-    playerSpeed: 400,
+    playerSpeed: 500,
     playerAccel: 10000,
-    friction: 8000,
+    friction: 6000,
     flareSpeed: 500,
     platformSpeeds: 15,
 };

@@ -1,6 +1,5 @@
 const KEY = {
     UP: 12,
-    DOWN: 83,
     LEFT:  37,
     RIGHT: 39,
     ENTER: 13,
@@ -9,11 +8,7 @@ const KEY = {
 
 class InputManager {
     constructor() {
-        this.pressedKeys = { left: false, right: false, up: false, down: false, jump: false, enter: false };
-        this.mousePos = {
-            x: -1,
-            y: -1
-        };
+        this.pressedKeys = { left: false, right: false, up: false, jump: false, enter: false };
     }
 
     bindKeys() {
@@ -27,36 +22,30 @@ class InputManager {
     }
       
     handleKeys(value, e){
-        let keys = this.pressedKeys;
         switch (e.keyCode) {
             case KEY.UP:
                 e.preventDefault();
-                keys.up = value;
-                break;
-            case KEY.DOWN:
-                e.preventDefault();
-                keys.down = value;
+                this.pressedKeys.up = value;
                 break;
             case KEY.LEFT:
                 e.preventDefault();
-                keys.left = value;
+                this.pressedKeys.left = value;
                 break;
             case KEY.RIGHT:
                 e.preventDefault();
-                keys.right = value;
+                this.pressedKeys.right = value;
                 break;
             case KEY.JUMP:
                 e.preventDefault();
-                keys.jump = value;
+                this.pressedKeys.jump = value;
                 break;
             case KEY.ENTER:
                 e.preventDefault();
-                keys.enter = value;
+                this.pressedKeys.enter = value;
                 break;
             default:
                 break;
         }
-        this.pressedKeys = keys;
     }
 }
 

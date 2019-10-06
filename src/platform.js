@@ -5,10 +5,6 @@ class Platform {
         this.width = width;
         this.height = height;
     }
-
-    update() {
-
-    }
 }
 
 export default Platform;
