@@ -29,7 +29,9 @@ class Display {
     drawPlatform(dx, dy, platform) {
         const cx = platform.x - dx;
         const cy = platform.y - dy;
-        ctx.fillStyle = '#040404';
+        // ctx.fillStyle = '#040404';
+        ctx.fillStyle = '#000000';
+
         ctx.fillRect(cx, cy, platform.width, platform.height);
         ctx.strokeStyle = 'white';
         // ctx.strokeRect(cx, cy, platform.width, platform.height);

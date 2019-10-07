@@ -38,7 +38,7 @@ class Model {
 
     generateFlares() {
         const now = Date.now();
-        if (now - this.lastFlare > 200) {
+        if (now - this.lastFlare > 250) {
             const color1 = Math.floor(Math.random()*3);
             const color2 = Math.floor(Math.random()*3);
             const flare = new Flare(Math.random()*1100 + 50,
@@ -55,8 +55,11 @@ class Model {
 
     resetGame() {
         this.entities.player.x = 400;
-        this.entities.player.y = 4800;
+        this.entities.player.y = 4855;
+        this.entities.player.vy = 0;
+
         this.entities.platforms = level1;
+        this.entities.platforms.forEach(platform => platform.touched = false);
         this.level = 1;
         this.gameOver = false;
         this.entities.player.score = -1;
@@ -68,6 +71,10 @@ class Model {
     }
 
     update(inputs, dt) {
+        if (this.entities.player.score > 5) this.level = 2;
+        if (this.entities.player.score > 15) this.level = 3;
+        if (this.entities.player.score > 30) this.level = 4;
+        
         if (this.entities.player.y > this.dy + 1.5*graphics.height) {
             this.gameOver = true;
         }

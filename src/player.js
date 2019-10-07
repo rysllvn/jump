@@ -70,7 +70,6 @@ class Player {
         this.x += this.vx * dt;
         this.y += this.vy * dt;
         this.onPlat = false;
-
         document.getElementById('score').innerHTML = `Platforms: ${this.score}`;
     }
 }
