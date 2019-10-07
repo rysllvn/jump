@@ -431,6 +431,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const level1 = [
+    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](400, 4000, 400, 28),
     new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](100, 4200, 400, 28),
     new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](520, 4400, 310, 28),
     new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](800, 4580, 200, 28),
@@ -470,6 +471,7 @@ const colors = [
 ];
 const introFlare = new _flare__WEBPACK_IMPORTED_MODULE_1__["default"](600, 4250, 300, 500, '#a450fd', '#50fdfa');
 const viewSpeeds = [0, 40, 80, 140, 220, 260];
+const flareSpeeds = [400, 200, 180, 170, 160, 150]
 const display = new _display__WEBPACK_IMPORTED_MODULE_0__["default"]();
 
 class Model {
@@ -485,17 +487,16 @@ class Model {
         this.gameOver = false;
     }
 
-    generatePlatforms() {
-        const lastX = this.entities.platforms[0].x;
+    generatePlatform() {
         const lastY = this.entities.platforms[0].y;
         const x = Math.random() * (_config__WEBPACK_IMPORTED_MODULE_5__["graphics"].width - 500) + 100;
         const y = lastY - 200;
-        if (lastY > this.dy + 200) this.entities.platforms.unshift(new _platform__WEBPACK_IMPORTED_MODULE_2__["default"](x, y, 300, 28));
+        this.entities.platforms.unshift(new _platform__WEBPACK_IMPORTED_MODULE_2__["default"](x, y, 300, 28));
     }
 
     generateFlares() {
         const now = Date.now();
-        if (now - this.lastFlare > 250) {
+        if (now - this.lastFlare > flareSpeeds[this.level]) {
             const color1 = Math.floor(Math.random()*3);
             const color2 = Math.floor(Math.random()*3);
             const flare = new _flare__WEBPACK_IMPORTED_MODULE_1__["default"](Math.random()*1100 + 50,
@@ -516,6 +517,7 @@ class Model {
         this.entities.player.vy = 0;
 
         this.entities.platforms = _levels__WEBPACK_IMPORTED_MODULE_4__["level1"];
+        this.entities.flares = [new _flare__WEBPACK_IMPORTED_MODULE_1__["default"](600, 4250, 300, 500, '#a450fd', '#50fdfa')];
         this.entities.platforms.forEach(platform => platform.touched = false);
         this.level = 1;
         this.gameOver = false;
@@ -540,7 +542,7 @@ class Model {
         this.entities.flares = this.entities.flares.filter(flare => flare.y < this.dy + _config__WEBPACK_IMPORTED_MODULE_5__["graphics"].height + flare.maxRadius);
         this.entities.platforms = this.entities.platforms.filter(platform => platform.y < this.dy + _config__WEBPACK_IMPORTED_MODULE_5__["graphics"].height + 200);
         this.generateFlares();
-        this.generatePlatforms();
+        if (this.entities.player.score > this.entities.platforms.length - 3) this.generatePlatform();
         this.entities.flares.forEach(flare => flare.update(dt));
         this.entities.player.update(inputs, dt);
         this.entities.player.handleCollisions(this.entities.platforms);

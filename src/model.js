@@ -13,6 +13,7 @@ const colors = [
 ];
 const introFlare = new Flare(600, 4250, 300, 500, '#a450fd', '#50fdfa');
 const viewSpeeds = [0, 40, 80, 140, 220, 260];
+const flareSpeeds = [400, 200, 180, 170, 160, 150]
 const display = new Display();
 
 class Model {
@@ -28,17 +29,16 @@ class Model {
         this.gameOver = false;
     }
 
-    generatePlatforms() {
-        const lastX = this.entities.platforms[0].x;
+    generatePlatform() {
         const lastY = this.entities.platforms[0].y;
         const x = Math.random() * (graphics.width - 500) + 100;
         const y = lastY - 200;
-        if (lastY > this.dy + 200) this.entities.platforms.unshift(new Platform(x, y, 300, 28));
+        this.entities.platforms.unshift(new Platform(x, y, 300, 28));
     }
 
     generateFlares() {
         const now = Date.now();
-        if (now - this.lastFlare > 250) {
+        if (now - this.lastFlare > flareSpeeds[this.level]) {
             const color1 = Math.floor(Math.random()*3);
             const color2 = Math.floor(Math.random()*3);
             const flare = new Flare(Math.random()*1100 + 50,
@@ -59,6 +59,7 @@ class Model {
         this.entities.player.vy = 0;
 
         this.entities.platforms = level1;
+        this.entities.flares = [new Flare(600, 4250, 300, 500, '#a450fd', '#50fdfa')];
         this.entities.platforms.forEach(platform => platform.touched = false);
         this.level = 1;
         this.gameOver = false;
@@ -83,7 +84,7 @@ class Model {
         this.entities.flares = this.entities.flares.filter(flare => flare.y < this.dy + graphics.height + flare.maxRadius);
         this.entities.platforms = this.entities.platforms.filter(platform => platform.y < this.dy + graphics.height + 200);
         this.generateFlares();
-        this.generatePlatforms();
+        if (this.entities.player.score > this.entities.platforms.length - 3) this.generatePlatform();
         this.entities.flares.forEach(flare => flare.update(dt));
         this.entities.player.update(inputs, dt);
         this.entities.player.handleCollisions(this.entities.platforms);

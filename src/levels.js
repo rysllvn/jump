@@ -1,6 +1,7 @@
 import Platform from './platform';
 
 export const level1 = [
+    new Platform(400, 4000, 400, 28),
     new Platform(100, 4200, 400, 28),
     new Platform(520, 4400, 310, 28),
     new Platform(800, 4580, 200, 28),
