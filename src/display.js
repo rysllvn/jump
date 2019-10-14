@@ -1,3 +1,4 @@
+import { graphics } from './config';
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -9,10 +10,10 @@ class Display {
 
     draw(dx, dy, entities) {
         ctx.fillStyle = 'black';
-        ctx.fillRect(0,0, 1200, 800);
+        ctx.fillRect(0,0, graphics.width, graphics.height);
         entities.flares.forEach(flare => this.drawFlare(dx, dy, flare));
-        this.drawPlayer(dx, dy, entities.player);
         entities.platforms.forEach(platform => this.drawPlatform(dx, dy, platform));
+        this.drawPlayer(dx, dy, entities.player);
     }
 
     drawFlare(dx, dy, flare) {

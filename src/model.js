@@ -31,9 +31,9 @@ class Model {
 
     generatePlatform() {
         const lastY = this.entities.platforms[0].y;
-        const x = Math.random() * (graphics.width - 500) + 100;
+        const x = Math.random() * (graphics.width - 320);
         const y = lastY - 200;
-        this.entities.platforms.unshift(new Platform(x, y, 300, 28));
+        this.entities.platforms.unshift(new Platform(x, y, 250, 28));
     }
 
     generateFlares() {

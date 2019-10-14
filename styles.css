@@ -10,7 +10,17 @@ body {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 1200px;
+    width: 1000px;
+}
+
+footer {
+    display: flex;
+    padding: 10px;
+}
+
+p {
+    margin: 0;
+    margin-right: 20px;
 }
 
 canvas {
@@ -21,6 +31,10 @@ canvas {
 h1 {
     font-size: 70px;
     text-align:center;
+}
+
+.social-link {
+    fill: grey;
 }
 
 .game {

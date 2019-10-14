@@ -114,8 +114,8 @@ const physics = {
 };
 
 const graphics = {
-    width: 1200,
-    height: 800,
+    width: 1000,
+    height: 600,
 };
 
 /***/ }),
@@ -129,6 +129,8 @@ const graphics = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/config.js");
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -140,10 +142,10 @@ class Display {
 
     draw(dx, dy, entities) {
         ctx.fillStyle = 'black';
-        ctx.fillRect(0,0, 1200, 800);
+        ctx.fillRect(0,0, _config__WEBPACK_IMPORTED_MODULE_0__["graphics"].width, _config__WEBPACK_IMPORTED_MODULE_0__["graphics"].height);
         entities.flares.forEach(flare => this.drawFlare(dx, dy, flare));
-        this.drawPlayer(dx, dy, entities.player);
         entities.platforms.forEach(platform => this.drawPlatform(dx, dy, platform));
+        this.drawPlayer(dx, dy, entities.player);
     }
 
     drawFlare(dx, dy, flare) {
@@ -427,16 +429,18 @@ class InputManager {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "level1", function() { return level1; });
-/* harmony import */ var _platform__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./platform */ "./src/platform.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ "./src/config.js");
+/* harmony import */ var _platform__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./platform */ "./src/platform.js");
+
 
 
 const level1 = [
-    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](400, 4000, 400, 28),
-    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](100, 4200, 400, 28),
-    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](520, 4400, 310, 28),
-    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](800, 4580, 200, 28),
-    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](400, 4700, 300, 28),
-    new _platform__WEBPACK_IMPORTED_MODULE_0__["default"](0, 4900, 1200, 200)
+    new _platform__WEBPACK_IMPORTED_MODULE_1__["default"](400, 4000, 400, 28),
+    new _platform__WEBPACK_IMPORTED_MODULE_1__["default"](100, 4200, 400, 28),
+    new _platform__WEBPACK_IMPORTED_MODULE_1__["default"](520, 4400, 310, 28),
+    new _platform__WEBPACK_IMPORTED_MODULE_1__["default"](800, 4580, 200, 28),
+    new _platform__WEBPACK_IMPORTED_MODULE_1__["default"](400, 4700, 300, 28),
+    new _platform__WEBPACK_IMPORTED_MODULE_1__["default"](0, 4900, _config__WEBPACK_IMPORTED_MODULE_0__["graphics"].width, 200)
 ];
 
 /***/ }),
@@ -489,9 +493,9 @@ class Model {
 
     generatePlatform() {
         const lastY = this.entities.platforms[0].y;
-        const x = Math.random() * (_config__WEBPACK_IMPORTED_MODULE_5__["graphics"].width - 500) + 100;
+        const x = Math.random() * (_config__WEBPACK_IMPORTED_MODULE_5__["graphics"].width - 320);
         const y = lastY - 200;
-        this.entities.platforms.unshift(new _platform__WEBPACK_IMPORTED_MODULE_2__["default"](x, y, 300, 28));
+        this.entities.platforms.unshift(new _platform__WEBPACK_IMPORTED_MODULE_2__["default"](x, y, 250, 28));
     }
 
     generateFlares() {

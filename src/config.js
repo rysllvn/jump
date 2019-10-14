@@ -14,6 +14,6 @@ export const physics = {
 };
 
 export const graphics = {
-    width: 1200,
-    height: 800,
+    width: 1000,
+    height: 600,
 };
