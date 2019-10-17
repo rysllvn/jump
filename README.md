@@ -14,7 +14,7 @@
 This purpose of this project was to create a fun game utilizing HTML 5 Canvas and JavaScript with the need for any other tools.
 
 ## Screenshots
-![Gameplay](./screenshots/jump-gameplay-gif)
+![Gameplay](./screenshots/jump-gameplay.gif)
 
 ## Technologies
 * HTML 5
