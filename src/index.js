@@ -24,7 +24,6 @@ const mainLoop = () => {
             model.resetGame();
             status === 'welcome';
             gameOverMessage.classList.add('hidden');
-            console.log('hmm');
         }
     }
 

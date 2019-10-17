@@ -41,6 +41,8 @@ class Player {
                 if (this.y < ey && this.y > sy) {
                     this.vy = 0;
                     this.y = ey;
+                    platform.bumped = true;
+                    platform.bumpedAt = Date.now();
                 }
             }
         });

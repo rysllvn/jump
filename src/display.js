@@ -31,9 +31,18 @@ class Display {
         const cx = platform.x - dx;
         const cy = platform.y - dy;
         // ctx.fillStyle = '#040404';
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = 'rgba(0,0,0,1)';
+        if (platform.touched) {
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = "white";
+        } else if (platform.bumped) {
+            ctx.shadowBlur = (Date.now() - platform.bumpedAt)*0.5;
+            ctx.shadowColor = "white";
+            platform.turnOffBumped();
+        }
 
         ctx.fillRect(cx, cy, platform.width, platform.height);
+        ctx.shadowBlur = 0;
         ctx.strokeStyle = 'white';
         // ctx.strokeRect(cx, cy, platform.width, platform.height);
     }

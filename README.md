@@ -67,13 +67,9 @@ List of features ready and TODOs for future development
 
 To-do list:
 * Implement a leaderboard
-* Wow improvement to be done 2
 
 ## Status
 Project is: _in progress_ until the leaderboard is implemented and the controls are finalized.
-
-## Inspiration
-Add here credits. Project inspired by..., based on...
 
 ## Contact
 Created by [Ryan Sullivan](https://www.linkedin.com/in/ryan-sullivan-32080223/) - feel free to contact me!

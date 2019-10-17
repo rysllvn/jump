@@ -16,11 +16,12 @@ body {
 footer {
     display: flex;
     padding: 10px;
+    justify-content: center;
+    align-items: center;
 }
 
 p {
     margin: 0;
-    margin-right: 20px;
 }
 
 canvas {
@@ -29,12 +30,17 @@ canvas {
 }
 
 h1 {
-    font-size: 70px;
+    font-size: 50px;
     text-align:center;
 }
 
 .social-link {
-    fill: grey;
+    fill: #a9fd50;
+    margin: 10px;
+}
+
+.social-link:hover {
+    fill: #50fdfa;
 }
 
 .game {

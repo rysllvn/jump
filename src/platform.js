@@ -5,6 +5,14 @@ class Platform {
         this.width = width;
         this.height = height;
         this.touched = false;
+        this.bumped = false;
+        this.bumpedAt = null;
+    }
+
+    turnOffBumped() {
+        if (this.bumped && Date.now() - this.bumpedAt > 600) {
+            this.bumped = false;
+        }
     }
 }
 
