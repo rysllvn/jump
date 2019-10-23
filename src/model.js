@@ -13,7 +13,7 @@ const colors = [
 ];
 const introFlare = new Flare(600, 4250, 300, 500, '#a450fd', '#50fdfa');
 const viewSpeeds = [0, 40, 80, 140, 220, 260];
-const flareSpeeds = [400, 200, 180, 170, 160, 150]
+const flareSpeeds = [250, 200, 160, 140, 120, 100]
 const display = new Display();
 
 class Model {
@@ -31,7 +31,7 @@ class Model {
 
     generatePlatform() {
         const lastY = this.entities.platforms[0].y;
-        const x = Math.random() * (graphics.width - 320);
+        const x = Math.random() * (graphics.width - 350) + 50;
         const y = lastY - 200;
         this.entities.platforms.unshift(new Platform(x, y, 250, 28));
     }
@@ -53,6 +53,10 @@ class Model {
         }
     }
 
+    start() {
+        this.level = 1;
+    }
+
     resetGame() {
         this.entities.player.x = 400;
         this.entities.player.y = 4855;
@@ -65,10 +69,6 @@ class Model {
         this.gameOver = false;
         this.entities.player.score = -1;
         this.dy = 4500;
-    }
-
-    start() {
-        this.level = 1;
     }
 
     update(inputs, dt) {

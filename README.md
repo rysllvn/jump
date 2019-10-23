@@ -11,7 +11,7 @@
 * [Contact](#contact)
 
 ## General info
-This purpose of this project was to create a fun game utilizing HTML 5 Canvas and JavaScript with the need for any other tools.
+This purpose of this project was to create a simple, but fun game using the awesome capabilities of JavaScript and the HTML 5 Canvas Element.
 
 ## Screenshots
 ![Gameplay](./screenshots/jump-gameplay.gif)
@@ -70,6 +70,9 @@ To-do list:
 
 ## Status
 Project is: _in progress_ until the leaderboard is implemented and the controls are finalized.
+
+## Inpsiration
+Ryan S, Parker Harris
 
 ## Contact
 Created by [Ryan Sullivan](https://www.linkedin.com/in/ryan-sullivan-32080223/) - feel free to contact me!
