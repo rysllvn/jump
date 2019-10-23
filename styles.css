@@ -42,11 +42,14 @@ h2 {
 }
 
 .social-link {
+    text-decoration: none;
+    color: #a9fd50;
     fill: #a9fd50;
     margin: 10px;
 }
 
 .social-link:hover {
+    color: #50fdfa;
     fill: #50fdfa;
 }
 
