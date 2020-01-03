@@ -373,34 +373,32 @@ mainLoop();
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 const KEY = {
-    UP: 12,
     LEFT:  37,
     RIGHT: 39,
     ENTER: 13,
-    JUMP: 38
+    JUMP: 38,
+    SEC_LEFT: 65,
+    SEC_RIGHT: 68,
+    SEC_JUMP: 87,
 };
 
 class InputManager {
     constructor() {
-        this.pressedKeys = { left: false, right: false, up: false, jump: false, enter: false };
+        this.pressedKeys = { left: false, right: false, jump: false, enter: false };
     }
 
     bindKeys() {
-        window.addEventListener('keyup', this.handleKeys.bind(this, false));
-        window.addEventListener('keydown', this.handleKeys.bind(this, true));
+        addEventListener('keyup', this.handleKeys.bind(this, false));
+        addEventListener('keydown', this.handleKeys.bind(this, true));
     }
       
     unbindKeys() {
-        window.removeEventListener('keyup', this.handleKeys);
-        window.removeEventListener('keydown', this.handleKeys);
+        removeEventListener('keyup', this.handleKeys);
+        removeEventListener('keydown', this.handleKeys);
     }
       
     handleKeys(value, e){
         switch (e.keyCode) {
-            case KEY.UP:
-                e.preventDefault();
-                this.pressedKeys.up = value;
-                break;
             case KEY.LEFT:
                 e.preventDefault();
                 this.pressedKeys.left = value;
@@ -416,6 +414,18 @@ class InputManager {
             case KEY.ENTER:
                 e.preventDefault();
                 this.pressedKeys.enter = value;
+                break;
+            case KEY.SEC_LEFT:
+                e.preventDefault();
+                this.pressedKeys.left = value;
+                break;
+            case KEY.SEC_RIGHT:
+                e.preventDefault();
+                this.pressedKeys.right = value;
+                break;
+            case KEY.SEC_JUMP:
+                e.preventDefault();
+                this.pressedKeys.jump = value;
                 break;
             default:
                 break;
@@ -637,14 +647,14 @@ class Player {
 
             if (this.x + 50 > sx && this.x < ex) {
                 // Handle floors
-                if (this.y + 50 > sy && this.y + 50 < ey ) {
+                if (this.y + 50 > sy && this.y + 50 < ey ) {                    
                     this.vy = 0;
                     this.y = sy - 50;
                     this.onPlat = true;
                     if (!platform.touched) {
                         platform.touched = true;
                         this.score += 1;
-                    }
+                    }                                     
                 }
                 // Handle ceilings
                 if (this.y < ey && this.y > sy) {

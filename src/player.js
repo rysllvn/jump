@@ -28,14 +28,14 @@ class Player {
 
             if (this.x + 50 > sx && this.x < ex) {
                 // Handle floors
-                if (this.y + 50 > sy && this.y + 50 < ey ) {
+                if (this.y + 50 > sy && this.y + 50 < ey ) {                    
                     this.vy = 0;
                     this.y = sy - 50;
                     this.onPlat = true;
                     if (!platform.touched) {
                         platform.touched = true;
                         this.score += 1;
-                    }
+                    }                                     
                 }
                 // Handle ceilings
                 if (this.y < ey && this.y > sy) {
