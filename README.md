@@ -1,5 +1,5 @@
 # Jump
-> JavaScript and HTML 5 Canvas platform game. [Live!](https://device89.github.io/jump/)
+> JavaScript and HTML 5 Canvas platform game. [Live!](https://rysllvn.github.io/jump/)
 
 ## Table of contents
 * [General info](#general-info)
