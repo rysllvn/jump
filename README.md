@@ -71,7 +71,7 @@ To-do list:
 ## Status
 Project is: _in progress_ until the leaderboard is implemented and the controls are finalized.
 
-## Inpsiration
+## Inspiration
 Ryan S, Parker Harris
 
 ## Contact
